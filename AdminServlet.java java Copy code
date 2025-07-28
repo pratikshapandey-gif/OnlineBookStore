@@ -1,0 +1,14 @@
+@WebServlet("/admin/updateStock")
+public class AdminServlet extends HttpServlet {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    int id = Integer.parseInt(req.getParameter("bookId"));
+    int newStock = Integer.parseInt(req.getParameter("stock"));
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement("UPDATE books SET stock = ? WHERE id = ?")) {
+      ps.setInt(1, newStock);
+      ps.setInt(2, id);
+      ps.executeUpdate();
+    } catch (SQLException e) { e.printStackTrace(); }
+    resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
+  }
+}
